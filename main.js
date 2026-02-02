@@ -10,6 +10,7 @@ ASSET_MANAGER.downloadAll(() => {
 	const ctx = canvas.getContext("2d");
 
 	gameEngine.addEntity(new Msqe(gameEngine));
+	gameEngine.addEntity(new Souls(gameEngine));
 
 	gameEngine.init(ctx);
 

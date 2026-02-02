@@ -10,15 +10,9 @@ class GameEngine {
         this.entities = [];
 
         // Information on the input
-        this.click = null;
-        this.mouse = null;
-        this.wheel = null;
-        this.keys = {};
-
-        // Options and the Details
-        this.options = options || {
-            debugging: false,
-        };
+        this.bubble = true;
+        this.isopen = false;
+        this.isclose = false;
     };
 
     init(ctx) {
@@ -37,47 +31,74 @@ class GameEngine {
     };
 
     startInput() {
-        const getXandY = e => ({
-            x: e.clientX - this.ctx.canvas.getBoundingClientRect().left,
-            y: e.clientY - this.ctx.canvas.getBoundingClientRect().top
-        });
-        
-        this.ctx.canvas.addEventListener("mousemove", e => {
-            if (this.options.debugging) {
-                console.log("MOUSE_MOVE", getXandY(e));
-            }
-            this.mouse = getXandY(e);
-        });
 
-        this.ctx.canvas.addEventListener("click", e => {
-            if (this.options.debugging) {
-                console.log("CLICK", getXandY(e));
+        var that = this
+        this.ctx.canvas.addEventListener("keydown", function (e) {
+            switch (e.code) {
+                case "KeyB": 
+                    that.isclose = false;
+                    that.isopen = false;
+                    that.bubble = true;
+                    console.log("B pressed!!!!")
+                    break;
+                case "KeyO": 
+                    that.isclose = false;
+                    that.isopen = true;
+                    that.bubble = false;
+                    console.log("O pressed!!!!")
+                    break;
+                case "KeyC": 
+                    that.isclose = true;
+                    that.isopen = false;
+                    that.bubble = false;
+                    console.log("C pressed!!!!")
+                    break;
             }
-            this.click = getXandY(e);
-        });
+        }, false);
 
-        this.ctx.canvas.addEventListener("wheel", e => {
-            if (this.options.debugging) {
-                console.log("WHEEL", getXandY(e), e.wheelDelta);
+        this.ctx.canvas.addEventListener("keyup", function (e) {
+            switch (e.code) {
+                case "KeyB": 
+                    break;
+                case "keyO": 
+                    break;
+                case "KeyC": 
+                    break;
             }
-            e.preventDefault(); // Prevent Scrolling
-            this.wheel = e;
-        });
-
-        this.ctx.canvas.addEventListener("contextmenu", e => {
-            if (this.options.debugging) {
-                console.log("RIGHT_CLICK", getXandY(e));
-            }
-            e.preventDefault(); // Prevent Context Menu
-            this.rightclick = getXandY(e);
-        });
-
-        this.ctx.canvas.addEventListener("keydown", event => this.keys[event.key] = true);
-        this.ctx.canvas.addEventListener("keyup", event => this.keys[event.key] = false);
+        }, false);
     };
 
     addEntity(entity) {
         this.entities.push(entity);
+    };
+
+    setState(num) {
+        if (num == 0) { 
+            that.isclose = false;
+            that.isopen = false;
+            that.bubble = true;
+        } else if (num == 1){
+            that.isclose = false;
+            that.isopen = true;
+            that.bubble = false;
+        } else {
+            that.isclose = true;
+            that.isopen = false;
+            that.bubble = false;
+        }
+    }
+
+    getState() {
+        if (this.isbubble) {
+            return 0;
+        };
+        if (this.isopen) {
+            return 1;
+        };
+        if (this.isclose) {
+            return 2;
+        }
+        return 0;
     };
 
     draw() {
